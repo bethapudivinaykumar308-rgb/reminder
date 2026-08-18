@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read and write for authenticated users, or open demo workspace if not yet signed in
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

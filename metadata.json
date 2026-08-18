@@ -1,0 +1,10 @@
+{
+  "name": "Electricity Bill SMS & AI Call Reminder",
+  "description": "Automated electricity bill recovery system with one-click bulk SMS dispatch, AI voice call reminders, multi-format document parsing (Excel, Word, PDF), Google Workspace sync, and real-time overdue balance tracking.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
