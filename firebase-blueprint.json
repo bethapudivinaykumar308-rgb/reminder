@@ -1,67 +1,53 @@
 {
   "entities": {
+    "Consumer": {
+      "title": "Consumer",
+      "description": "A consumer who owes an electricity bill.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\\\-]+$" },
+        "consumerId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 256 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "amount": { "type": "number" },
+        "dueDate": { "type": "string", "maxLength": 32 },
+        "overdueDays": { "type": "number" },
+        "tariffType": { "type": "string", "enum": ["Domestic", "Commercial", "Industrial", "Agricultural"] },
+        "address": { "type": "string", "maxLength": 1024 },
+        "status": { "type": "string", "enum": ["unpaid", "paid"] },
+        "hasNoWhatsApp": { "type": "boolean" },
+        "notes": { "type": "string", "maxLength": 2048 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["consumerId", "name", "phone", "amount", "dueDate", "status"]
+    },
+    "DispatchLog": {
+      "title": "DispatchLog",
+      "description": "Log of a dispatched SMS, Voice, or WhatsApp message.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\\\-]+$" },
+        "consumerId": { "type": "string", "maxLength": 128 },
+        "consumerName": { "type": "string", "maxLength": 256 },
+        "type": { "type": "string", "enum": ["sms", "voice", "whatsapp"] },
+        "status": { "type": "string", "enum": ["delivered", "failed", "pending", "completed", "answered", "voicemail"] },
+        "timestamp": { "type": "string" },
+        "notes": { "type": "string", "maxLength": 2048 },
+        "cost": { "type": "number" },
+        "duration": { "type": "number" }
+      },
+      "required": ["consumerId", "consumerName", "type", "status", "timestamp"]
+    }
+  },
+  "firestore": {
     "consumers": {
-      "fields": {
-        "id": { "type": "string", "description": "Unique record identifier" },
-        "consumerId": { "type": "string", "description": "Electricity Account / Consumer Number" },
-        "meterNo": { "type": "string", "description": "Meter serial number" },
-        "name": { "type": "string", "description": "Full customer name" },
-        "phone": { "type": "string", "description": "Primary mobile number for SMS and Voice Calling" },
-        "email": { "type": "string", "description": "Customer email address" },
-        "amount": { "type": "number", "description": "Unpaid bill balance in currency" },
-        "dueDate": { "type": "string", "description": "Bill due date" },
-        "overdueDays": { "type": "number", "description": "Calculated number of overdue days" },
-        "tariffType": { "type": "string", "description": "Domestic, Commercial, Industrial, Agricultural" },
-        "address": { "type": "string", "description": "Service billing address or substation feeder" },
-        "status": { "type": "string", "description": "unpaid | partially_paid | paid | disputed | disconnected" },
-        "lastSmsDate": { "type": "string", "description": "Timestamp of last SMS reminder" },
-        "lastCallDate": { "type": "string", "description": "Timestamp of last AI Voice Call reminder" },
-        "notes": { "type": "string", "description": "Internal collection agent notes" },
-        "createdBy": { "type": "string", "description": "User ID who imported or owns the record" },
-        "createdAt": { "type": "string", "description": "ISO timestamp created" },
-        "updatedAt": { "type": "string", "description": "ISO timestamp last updated" }
-      }
+      "schema": "Consumer",
+      "description": "Collection of consumers"
     },
-    "dispatch_logs": {
-      "fields": {
-        "id": { "type": "string", "description": "Log record ID" },
-        "type": { "type": "string", "description": "sms | aicall" },
-        "consumerId": { "type": "string", "description": "Associated consumer ID" },
-        "consumerName": { "type": "string", "description": "Consumer name" },
-        "phone": { "type": "string", "description": "Destination phone number" },
-        "amount": { "type": "number", "description": "Bill amount reminded" },
-        "status": { "type": "string", "description": "delivered | sent | failed | completed | no-answer | busy" },
-        "messageContent": { "type": "string", "description": "Dispatched SMS text or Voice script content" },
-        "callDuration": { "type": "number", "description": "Call duration in seconds if voice call" },
-        "callTranscript": { "type": "string", "description": "Simulated or actual AI call conversation transcript" },
-        "customerResponse": { "type": "string", "description": "Keypad response or verbal commitment: promised_to_pay, requested_extension, dispute, etc." },
-        "timestamp": { "type": "string", "description": "Dispatch timestamp" },
-        "batchId": { "type": "string", "description": "Batch operation identifier" },
-        "createdBy": { "type": "string", "description": "User ID who triggered the dispatch" }
-      }
-    },
-    "reminder_templates": {
-      "fields": {
-        "id": { "type": "string", "description": "Template ID" },
-        "type": { "type": "string", "description": "sms | aicall" },
-        "title": { "type": "string", "description": "Template name e.g. Urgent Disconnection Notice" },
-        "textTemplate": { "type": "string", "description": "Script with dynamic tags {name}, {amount}, {consumer_id}, {due_date}, {pay_link}" },
-        "tone": { "type": "string", "description": "polite | firm | urgent | legal" },
-        "language": { "type": "string", "description": "en | es | hi | te | ta | fr" },
-        "voice": { "type": "string", "description": "Puck | Aoede | Fenrir | Kore | Charon | Natural" },
-        "isDefault": { "type": "boolean", "description": "Whether this is active default template" },
-        "createdBy": { "type": "string", "description": "User ID" }
-      }
-    },
-    "settings": {
-      "fields": {
-        "utilityName": { "type": "string", "description": "Electric power board or utility company name" },
-        "supportPhone": { "type": "string", "description": "Helpline phone number" },
-        "paymentPortalUrl": { "type": "string", "description": "Online payment web URL" },
-        "emailReportsTo": { "type": "string", "description": "Default email address for dispatch analytics reports" },
-        "autoSyncGoogle": { "type": "boolean", "description": "Sync with Google Sheets automatically" },
-        "updatedAt": { "type": "string", "description": "ISO timestamp" }
-      }
+    "logs": {
+      "schema": "DispatchLog",
+      "description": "Collection of dispatch logs"
     }
   }
 }

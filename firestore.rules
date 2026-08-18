@@ -1,9 +1,54 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read and write for authenticated users, or open demo workspace if not yet signed in
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      // In AI Studio mock auth, email_verified might not be true, so just check auth
+      return isSignedIn();
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidConsumer(data) {
+      return data.keys().hasAll(['consumerId', 'name', 'phone', 'amount', 'dueDate', 'status'])
+        && data.consumerId is string
+        && data.name is string
+        && data.phone is string
+        && data.amount is number
+        && data.dueDate is string
+        && data.status is string;
+    }
+
+    match /consumers/{consumerId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidConsumer(incoming());
+      allow update: if isVerified() && isValidConsumer(incoming());
+      allow delete: if isVerified();
+    }
+
+    function isValidLog(data) {
+      return data.keys().hasAll(['consumerId', 'consumerName', 'type', 'status', 'timestamp'])
+        && data.consumerId is string
+        && data.consumerName is string
+        && data.type is string
+        && data.status is string
+        && data.timestamp is string;
+    }
+
+    match /logs/{logId} {
+      allow read: if isVerified();
+      allow create: if isVerified() && isValidLog(incoming());
+      allow update: if isVerified() && isValidLog(incoming());
+      allow delete: if isVerified();
     }
   }
 }
