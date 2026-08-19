@@ -39,6 +39,7 @@ import { TemplateEditorModal } from './components/TemplateEditorModal';
 import { GoogleWorkspaceModal } from './components/GoogleWorkspaceModal';
 import { EditConsumerModal } from './components/EditConsumerModal';
 import { SettingsModal } from './components/SettingsModal';
+import { VerificationCenter } from './components/VerificationCenter';
 import { LauncherPhoneModal } from './components/LauncherPhoneModal';
 
 // Services
@@ -60,7 +61,7 @@ export default function App() {
   const [settings, setSettings] = useState<UtilitySettings>(DEFAULT_SETTINGS);
 
   // UI State
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'history' | 'analytics' | 'templates' | 'no_whatsapp'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'history' | 'analytics' | 'templates' | 'verification' | 'no_whatsapp'>('dashboard');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
@@ -325,6 +326,13 @@ export default function App() {
           <p className="text-slate-400 text-sm mb-8">
             Access to the Electricity Bill Recovery Engine is strictly restricted to authorized staff. Please log in to view consumer details.
           </p>
+          
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs p-3 rounded-xl mb-6 text-left">
+            <span className="font-bold block mb-1">If login fails or page doesn't redirect:</span>
+            1. You MUST open this app in a <b>New Tab</b> (use the Open in New Tab button in the top right of the Preview). <br/>
+            2. Make sure you authorized the domain in Firebase Authentication settings.
+          </div>
+
           <button
             onClick={handleLogin}
             disabled={isLoggingIn}
@@ -518,6 +526,14 @@ export default function App() {
                 settings={settings}
               />
             </div>
+          </div>
+        )}
+
+        
+        {/* Verification Center Tab */}
+        {activeTab === 'verification' && (
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-xs h-[calc(100vh-140px)]">
+            <VerificationCenter />
           </div>
         )}
 

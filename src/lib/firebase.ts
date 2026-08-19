@@ -8,7 +8,7 @@ import {
   signOut as firebaseSignOut
 } from 'firebase/auth';
 import {
-  getFirestore,
+  getFirestore, initializeFirestore,
   collection,
   doc,
   setDoc,
@@ -29,9 +29,13 @@ export const auth = getAuth(app);
 // Database initialization
 let firestoreDb: Firestore;
 try {
-  firestoreDb = getFirestore(app, 'ai-studio-electricitybills-5e160414-7db0-4994-bad7-47dc4a6b3e30');
+  firestoreDb = initializeFirestore(app, { experimentalForceLongPolling: true }, 'ai-studio-electricitybills-5e160414-7db0-4994-bad7-47dc4a6b3e30');
 } catch (e) {
-  firestoreDb = getFirestore(app);
+  try {
+    firestoreDb = getFirestore(app, 'ai-studio-electricitybills-5e160414-7db0-4994-bad7-47dc4a6b3e30');
+  } catch (e2) {
+    firestoreDb = getFirestore(app);
+  }
 }
 export const db = firestoreDb;
 

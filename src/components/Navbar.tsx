@@ -1,5 +1,5 @@
 import React from 'react';
-import {
+import { FileText,
   Zap,
   PhoneCall,
   MessageSquare,
@@ -19,7 +19,7 @@ interface NavbarProps {
   onLogin: () => void;
   onLogout: () => void;
   isLoggingIn: boolean;
-  activeTab: 'dashboard' | 'history' | 'analytics' | 'templates' | 'no_whatsapp';
+  activeTab: 'dashboard' | 'history' | 'analytics' | 'templates' | 'verification' | 'no_whatsapp';
   setActiveTab: (tab: 'dashboard' | 'history' | 'analytics' | 'templates') => void;
   settings: UtilitySettings;
   onOpenSettings: () => void;
@@ -121,6 +121,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Sliders className="w-3.5 h-3.5 text-violet-500" />
               AI Script Studio
             </button>
+            <button
+              id="tab-verification"
+              onClick={() => setActiveTab('verification')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                activeTab === 'verification'
+                  ? 'bg-white text-blue-700 shadow-xs border border-slate-200/70'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-indigo-500" />
+              Verification Center
+            </button>
+
           </nav>
 
           {/* Right Action Controls: Currency, Google Workspace Status, User / Sign In */}
@@ -275,6 +288,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             🎙️ Voice Studio
           </button>
+          <button
+            onClick={() => setActiveTab('verification')}
+            className={`px-3 py-1 rounded-md font-medium whitespace-nowrap ${
+              activeTab === 'verification' ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-600'
+            }`}
+          >
+            📑 Verification
+          </button>
+
         </div>
       </div>
     </header>
